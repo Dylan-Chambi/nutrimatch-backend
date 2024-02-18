@@ -1,0 +1,5 @@
+uvicorn
+fastapi
+pydantic
+pydantic_settings
+numpy
