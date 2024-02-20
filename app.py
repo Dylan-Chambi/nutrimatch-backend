@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,16 +8,24 @@ from trulens_eval import Tru
 
 SETTINGS = get_settings()
 
+tru = Tru(database_url=SETTINGS.TRULENS_DB_URL)
+
 def custom_generate_unique_id(route: APIRoute):
     return f"{route.tags[0]}-{route.name}"
 
-tru = Tru(database_url=SETTINGS.TRULENS_DB_URL)
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    tru.run_dashboard()
+    yield
+    tru.stop_dashboard()
 
 app = FastAPI(
     title=SETTINGS.API_NAME, 
     openapi_url=f"{SETTINGS.API_V1_STR}/openapi.json",
     version=SETTINGS.REVISION,
-    generate_unique_id_function=custom_generate_unique_id
+    generate_unique_id_function=custom_generate_unique_id,
+    lifespan=lifespan
 )
 
 origins = [
