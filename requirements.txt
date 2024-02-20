@@ -3,3 +3,4 @@ fastapi
 pydantic
 pydantic_settings
 numpy
+python_multipart
