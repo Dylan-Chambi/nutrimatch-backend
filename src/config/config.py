@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     REVISION: str = "local"
     OPENAI_CHAT_MODEL: str = "gpt-4-turbo-preview"
     OPENAI_VISION_MODEL: str = "gpt-4-vision-preview"
+    TRULENS_DB_URL: str = "sqlite:///trulens.db"
     OPENAI_KEY: str
 
 @cache

@@ -3,11 +3,14 @@ from fastapi.routing import APIRoute
 from fastapi.middleware.cors import CORSMiddleware
 from src.routers.v1 import router_v1
 from src.config.config import get_settings
+from trulens_eval import Tru
 
 SETTINGS = get_settings()
 
 def custom_generate_unique_id(route: APIRoute):
     return f"{route.tags[0]}-{route.name}"
+
+tru = Tru(database_url=SETTINGS.TRULENS_DB_URL)
 
 app = FastAPI(
     title=SETTINGS.API_NAME, 
