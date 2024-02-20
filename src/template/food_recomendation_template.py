@@ -8,7 +8,6 @@ Food Recommendation:
 - Food Recommendations: a list of recommendations for each food or dish present on the user input
 
 Food Recommendation Item:
-- Name: the name of the food or dish
 - Recommendation: a recommendation for the food or dish
 - Nutritional Score: a score from 0 to 100 indicating the nutritional value of the recommendation
 - Calories: the amount of calories
@@ -27,6 +26,8 @@ Food Recommendation Item:
 - Warning: a possible warning for the food or dish
 - Alternative Recommendation: an alternative recommendation for the food or dish
 - Alternative Nutritional Score: a score from 0 to 100 indicating the nutritional value of the alternative recommendation
+
+You can copy the values that are present on the user input and paste them on the response (only the exact keys and values that are present on the user input and that are necessary for the response).
 
 Try to provide a recommendation for each food or dish present on the user input (That is on json format).
 

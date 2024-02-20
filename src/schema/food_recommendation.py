@@ -1,9 +1,9 @@
 from langchain_core.pydantic_v1 import BaseModel, Field
 from typing import Optional
+from src.schema.food_detection import FoodItem
 
 
-class FoodRecommendationItem(BaseModel):
-    name: str
+class FoodRecommendationItem(FoodItem):
     recommendation: str
     nutritional_score: int = Field(..., ge=0, le=100)
     calories: Optional[int] = Field(..., ge=0)
@@ -27,6 +27,7 @@ class FoodRecommendationItem(BaseModel):
 class FoodRecommendation(BaseModel):
     valid_user_input: bool
     error_message: Optional[str]
+    general_description: Optional[str]
     general_recommendation: Optional[str]
     general_nutritional_score: Optional[int] = Field(..., ge=0, le=100)
     nutritional_info_unit: Optional[str]
