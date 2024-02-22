@@ -17,7 +17,7 @@ class GPTFoodDetector(GeneralFoodDetector):
             model_name=SETTINGS.OPENAI_VISION_MODEL, 
             model=ChatOpenAI(model_name=SETTINGS.OPENAI_VISION_MODEL,
                              openai_api_key=SETTINGS.OPENAI_KEY,
-                             max_tokens=500,
+                             max_tokens=1000,
                              )
             )
         

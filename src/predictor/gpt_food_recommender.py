@@ -20,7 +20,7 @@ class GPTFoodRecommender(GeneralFoodRecommender):
             model=ChatOpenAI(
                     model_name=SETTINGS.OPENAI_CHAT_MODEL,
                     openai_api_key=SETTINGS.OPENAI_KEY,
-                    max_tokens=500,
+                    max_tokens=1000,
                     model_kwargs={"response_format": { "type": "json_object" }}
                 )
             )
@@ -59,11 +59,7 @@ class GPTFoodRecommender(GeneralFoodRecommender):
         
         prediction = self.model.invoke(messages)
 
-        print("PREDCITION: ", prediction)
-
         food_recommendation: FoodRecommendation = out_parser.invoke(prediction)
-
-        print("FOOD RECOMMENDATION: ", food_recommendation)
 
         return food_recommendation
         

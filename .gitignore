@@ -112,3 +112,4 @@ venv.bak/
 
 # Miscellaneous
 clean_env.ps1
+test.py

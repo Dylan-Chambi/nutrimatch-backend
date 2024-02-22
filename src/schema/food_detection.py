@@ -6,9 +6,9 @@ class FoodItem(BaseModel):
     size: int
     size_unit: str
     amount: int
-    seasonings: str
     confidence: float
-    ingredients: list[str]
+    seasonings: Optional[list[str]]
+    ingredients: Optional[list[str]]
 
 class FoodDetection(BaseModel):
     valid_food_image: bool

@@ -13,6 +13,7 @@ async def authentication_jwt_middleware(token: HTTPAuthorizationCredentials = De
         user = auth.get_user(uid)
         return user
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token",
