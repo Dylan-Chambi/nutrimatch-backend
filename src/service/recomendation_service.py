@@ -4,6 +4,7 @@ from src.config.config import get_settings
 from src.schema.food_detection import FoodDetection
 from src.trulens.recommender_tracking import RecommenderTracking
 from src.service.image_pred_service import ImagePredictionService
+from src.schema.food_recommendation import FoodRecommendation
 
 SETTINGS = get_settings()
 
@@ -12,7 +13,7 @@ class RecommendationService():
         self.trulens_tracker: RecommenderTracking = trulens_tracker
         
 
-    def make_recommendation(self, image: UploadFile, img_pred_service: ImagePredictionService):
+    def make_recommendation(self, image: UploadFile, img_pred_service: ImagePredictionService) -> FoodRecommendation:
         """
         Service to detect food in an image
         """
@@ -20,4 +21,4 @@ class RecommendationService():
         
         # Make prediction with trulens recorder
         with self.trulens_tracker.tru_llm_recorder as recording:
-            return self.trulens_tracker.food_recommender.get_recommendation(food_detection.json())
+            return self.trulens_tracker.food_recommender.get_recommendation(food_detection.json(), FOOD_RECOMMENDATION_TEMPLATE)

@@ -26,7 +26,6 @@ class GPTFoodRecommender(GeneralFoodRecommender):
             )
         
     @instrument
-
     def get_recommendation(self, food_detection: str, recommender_context_template: str = FOOD_RECOMMENDATION_TEMPLATE) -> FoodRecommendation:
         """
         Detect food in an image using the GPT Vision model

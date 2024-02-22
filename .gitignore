@@ -109,3 +109,6 @@ venv.bak/
 
 
 .streamlit/
+
+# Miscellaneous
+clean_env.ps1

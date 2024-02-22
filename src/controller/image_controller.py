@@ -1,6 +1,7 @@
 from fastapi import UploadFile, HTTPException
 from src.service.image_pred_service import ImagePredictionService
 from src.service.recomendation_service import RecommendationService
+from firebase_admin.auth import UserRecord
 
 
 def image_detect_food(file: UploadFile, img_pred_service: ImagePredictionService):
@@ -13,7 +14,7 @@ def image_detect_food(file: UploadFile, img_pred_service: ImagePredictionService
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error") from e
 
-def get_recomendation_by_image(file: UploadFile, img_pred_service: ImagePredictionService, recommender_service: RecommendationService):
+def get_recomendation_by_image(user_info: UserRecord, file: UploadFile, img_pred_service: ImagePredictionService, recommender_service: RecommendationService):
     """
     Controller to recommend food in an image
     """
