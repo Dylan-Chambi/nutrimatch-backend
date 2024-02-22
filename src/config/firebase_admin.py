@@ -17,8 +17,11 @@ def initialize_firebase_admin():
         "token_uri": SETTINGS.FIREBASE_TOKEN_URI,
         "auth_provider_x509_cert_url": SETTINGS.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
         "client_x509_cert_url": SETTINGS.FIREBASE_CLIENT_X509_CERT_URL,
+        "universe_domain": SETTINGS.FIREBASE_UNIVERSE_DOMAIN
     }
 
     cred = credentials.Certificate(credentials_obj)
 
-    firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': SETTINGS.FIREBASE_STORAGE_BUCKET
+    })

@@ -28,6 +28,8 @@ class ImagePredictionService():
         # Convert the image to base64
         image_b64 = base64.b64encode(webp_stream.getvalue()).decode('utf-8')
         image_b64 = f"data:image/webp;base64,{image_b64}"
+
+        image.file.seek(0)
         
         # Make prediction with trulens recorder
         with self.trulens_tracker.tru_llm_recorder as recording:

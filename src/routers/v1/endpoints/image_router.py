@@ -1,10 +1,10 @@
 from fastapi import APIRouter, UploadFile, status, Depends
 from typing import Annotated
-from src.schema.food_recommendation_document import FoodRecommendationDocument
 from src.controller.image_controller import image_detect_food, get_recomendation_by_image
 from src.middleware.image_middleware import ImageValidationMiddleware
 from src.service.image_pred_service import ImagePredictionService
 from src.service.firestore_service import FirestoreService
+from src.service.firebase_storage_service import FirebaseStorageService
 from src.trulens.detector_tracking import DetectorTracking
 from src.trulens.recommender_tracking import RecommenderTracking
 from src.service.recomendation_service import RecommendationService
@@ -27,7 +27,9 @@ def get_recommendation_service():
     return RecommendationService(recommender_tracking)
 
 def get_firestore_service():
-    return FirestoreService()
+    firebase_storage_service = FirebaseStorageService()
+    return FirestoreService(firebase_storage_service)
+
 
 @food_detec_router.get("/health-check", status_code=status.HTTP_200_OK)
 async def health_check():
