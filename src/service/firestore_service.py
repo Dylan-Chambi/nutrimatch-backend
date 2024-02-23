@@ -20,6 +20,8 @@ class FirestoreService:
         """
         Save recommendation by user
         """
+        if not recommendation.valid_user_input:
+            raise HTTPException(status_code=400, detail=recommendation.error_message)
         col_ref = self.db.collection('users').document(user_info.uid).collection('recommendations')
         data = recommendation.dict()
         data_with_timestamp = {**data, "timestamp": firestore.SERVER_TIMESTAMP}
