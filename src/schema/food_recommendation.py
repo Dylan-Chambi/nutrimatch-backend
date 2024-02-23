@@ -27,6 +27,7 @@ class FoodRecommendationItem(FoodItem):
 class FoodRecommendation(BaseModel):
     valid_user_input: bool
     error_message: Optional[str]
+    short_food_name: Optional[str] = Field(max_length=50)
     general_description: Optional[str]
     general_recommendation: Optional[str]
     general_nutritional_score: Optional[int] = Field(ge=0, le=100)

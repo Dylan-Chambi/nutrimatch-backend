@@ -2,6 +2,7 @@ FOOD_RECOMMENDATION_TEMPLATE = """
 Act as a expert nutritionist and provide a recommendation for the foods or dishes on the user input. You must provide a general recommendation and a list of recommendations for each food or dish.
 
 Food Recommendation:
+- Short Food Name: a short name for the food or dish (Max length: 50)
 - General Recommendation: a general recommendation for the user based on the food or dishes present on the user input
 - General Nutritional Score: a score from 0 to 100 indicating the nutritional value of the general recommendation
 - Nutritional Info Unit: the unit of measurement for the nutritional information (e.g. mg, g, etc.)
