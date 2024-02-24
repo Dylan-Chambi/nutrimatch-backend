@@ -7,7 +7,7 @@ from PIL import Image
 class ImageValidationMiddleware:
     def __call__(self, file: UploadFile = File(...)):
         # Check if the content type is an image
-        if not file.content_type in ["image/jpeg", "image/png", "image/jpg", "image/webp"]:
+        if not file.content_type in ["image/jpeg", "image/png", "image/jpg", "image/webp", "application/octet-stream"]:
             raise HTTPException(
                 status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
                 detail="Only images with jpeg, jpg, png, and webp formats are supported"

@@ -5,6 +5,7 @@ from src.service.firebase_storage_service import FirebaseStorageService
 from src.schema.food_recommendation import FoodRecommendation
 from src.schema.food_recommendation_document import FoodRecommendationDocument
 from src.util.image_util import convet_file_webp
+import concurrent
 
 class FirestoreService:
     def __init__(self, firebase_storage_service: FirebaseStorageService):
@@ -45,13 +46,32 @@ class FirestoreService:
         col_ref = self.db.collection('users').document(user_info.uid).collection('recommendations')
         docs = col_ref.stream()
         recommendations = []
-        for doc in docs:
-            doc_dict = doc.to_dict()
-            rec = FoodRecommendationDocument(**doc_dict, id=doc.id, image_url=self.firebase_storage_service.get_image_url(doc_dict['image_path'] if 'image_path' in doc_dict else None))
-            recommendations.append(rec)
+
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            future_to_doc = {executor.submit(self.get_image_url, doc): doc for doc in docs}
+            for future in concurrent.futures.as_completed(future_to_doc):
+                doc = future_to_doc[future]
+                try:
+                    image_url = future.result()
+                    doc_dict = doc.to_dict()
+                    rec = FoodRecommendationDocument(**doc_dict, id=doc.id, image_url=image_url)
+                    recommendations.append(rec)
+                except Exception as e:
+                    # Handle exception if the retrieval of image URL fails
+                    print(f"Error retrieving image URL: {e}")
 
         recommendations.sort(key=lambda x: x.timestamp, reverse=True)
         return recommendations
+
+    def get_image_url(self, doc) -> str:
+        """
+        Get image URL for a document
+        """
+        doc_dict = doc.to_dict()
+        image_path = doc_dict.get('image_path')
+        if image_path:
+            return self.firebase_storage_service.get_image_url(image_path)
+        return None
     
 
     def get_recommendation_by_id(self, user_info: UserRecord, recommendation_id: str) -> FoodRecommendationDocument:
