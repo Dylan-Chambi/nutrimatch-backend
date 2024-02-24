@@ -3,14 +3,14 @@ import io
 from PIL import Image
 from fastapi import UploadFile
 from src.template.food_detection_template import FOOD_DETECTION_TEMPLATE
+from src.predictor.gpt_food_detector import GeneralFoodDetector
 from src.config.config import get_settings
-from src.trulens.detector_tracking import DetectorTracking
 
 SETTINGS = get_settings()
 
 class ImagePredictionService():
-    def __init__(self, trulens_tracker):
-        self.trulens_tracker: DetectorTracking = trulens_tracker
+    def __init__(self, gpt_food_detector: GeneralFoodDetector):
+        self.gpt_food_detector = gpt_food_detector
         
 
     def detect_food(self, image: UploadFile):
@@ -31,6 +31,4 @@ class ImagePredictionService():
 
         image.file.seek(0)
         
-        # Make prediction with trulens recorder
-        with self.trulens_tracker.tru_llm_recorder as recording:
-            return self.trulens_tracker.food_detector.detect_food(image_b64, FOOD_DETECTION_TEMPLATE)
+        return self.gpt_food_detector.detect_food(image_b64, FOOD_DETECTION_TEMPLATE)

@@ -7,7 +7,6 @@ from src.model.general_food_detector import GeneralFoodDetector
 from src.schema.food_detection import FoodDetection
 from src.template.food_detection_template import FOOD_DETECTION_TEMPLATE
 from langchain.schema.messages import HumanMessage, SystemMessage
-from trulens_eval.tru_custom_app import instrument
 
 SETTINGS = get_settings()
 
@@ -21,7 +20,6 @@ class GPTFoodDetector(GeneralFoodDetector):
                              )
             )
         
-    @instrument
     def detect_food(self, image_b64: str, detector_context_template: str = FOOD_DETECTION_TEMPLATE) -> FoodDetection:
         """
         Detect food in an image using the GPT Vision model

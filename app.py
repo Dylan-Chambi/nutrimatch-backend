@@ -5,12 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.routers.v1 import router_v1
 from src.config.config import get_settings
 from src.config.firebase_admin import initialize_firebase_admin
-from trulens_eval import Tru
 
 
 SETTINGS = get_settings()
-
-tru = Tru(database_url=SETTINGS.TRULENS_DB_URL)
 
 def custom_generate_unique_id(route: APIRoute):
     return f"{route.tags[0]}-{route.name}"
@@ -19,9 +16,7 @@ def custom_generate_unique_id(route: APIRoute):
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     initialize_firebase_admin()
-    tru.run_dashboard()
     yield
-    tru.stop_dashboard()
 
 app = FastAPI(
     title=SETTINGS.API_NAME, 

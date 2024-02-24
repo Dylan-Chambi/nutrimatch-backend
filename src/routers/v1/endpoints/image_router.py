@@ -5,11 +5,11 @@ from src.middleware.image_middleware import ImageValidationMiddleware
 from src.service.image_pred_service import ImagePredictionService
 from src.service.firestore_service import FirestoreService
 from src.service.firebase_storage_service import FirebaseStorageService
-from src.trulens.detector_tracking import DetectorTracking
-from src.trulens.recommender_tracking import RecommenderTracking
 from src.service.recomendation_service import RecommendationService
 from src.middleware.auth_middleware import authentication_jwt_middleware
 from firebase_admin.auth import UserRecord
+from src.predictor.gpt_food_detector import GPTFoodDetector
+from src.predictor.gpt_food_recommender import GPTFoodRecommender
 
 
 
@@ -18,13 +18,13 @@ food_detec_router = APIRouter()
 
 
 def get_image_pred_service():
-    detector_tracking = DetectorTracking()
-    return ImagePredictionService(detector_tracking)
+    gpt_food_detector = GPTFoodDetector()
+    return ImagePredictionService(gpt_food_detector)
 
 
 def get_recommendation_service():
-    recommender_tracking = RecommenderTracking()
-    return RecommendationService(recommender_tracking)
+    gpt_food_recommender = GPTFoodRecommender()
+    return RecommendationService(gpt_food_recommender)
 
 def get_firestore_service():
     firebase_storage_service = FirebaseStorageService()

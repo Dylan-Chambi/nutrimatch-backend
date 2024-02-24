@@ -6,5 +6,5 @@ class GeneralFoodRecommender(ABC):
         self.model_name = model_name
         self.model = model
 
-    def get_recommendation(self, food_detection: FoodDetection):
+    def get_recommendation(self, food_detection: FoodDetection, recommender_context_template: str):
         pass
