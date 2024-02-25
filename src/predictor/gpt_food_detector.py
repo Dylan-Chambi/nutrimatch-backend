@@ -7,6 +7,7 @@ from src.model.general_food_detector import GeneralFoodDetector
 from src.schema.food_detection import FoodDetection
 from src.template.food_detection_template import FOOD_DETECTION_TEMPLATE
 from langchain.schema.messages import HumanMessage, SystemMessage
+from src.config.logger import logger
 
 SETTINGS = get_settings()
 
@@ -24,6 +25,7 @@ class GPTFoodDetector(GeneralFoodDetector):
         """
         Detect food in an image using the GPT Vision model
         """
+        logger.info({"method": "detect_food", "message": f"Detecting food in image with image_b64: {image_b64[:100]}... and detector_context_template: {detector_context_template[:100]}..."})
         out_parser = PydanticOutputParser(pydantic_object=FoodDetection)
         
         prompt = PromptTemplate(
@@ -59,5 +61,6 @@ class GPTFoodDetector(GeneralFoodDetector):
         
         food_detection: FoodDetection = out_parser.invoke(prediction)
         
+        logger.info({"method": "detect_food", "message": f"Detected food in image: {str(food_detection)[:100]}..."})
         return food_detection
         

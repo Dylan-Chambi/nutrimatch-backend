@@ -23,6 +23,9 @@ class FoodRecommendationItem(FoodItem):
     alternative_recommendation: Optional[str]
     alternative_nutritional_score: Optional[int] = Field(ge=0, le=100)
 
+    def __str__(self):
+        return f"FoodRecommendationItem(recommendation={self.recommendation}, nutritional_score={self.nutritional_score}, calories={self.calories}, carbohydrates={self.carbohydrates}, fat={self.fat}, protein={self.protein}, fiber={self.fiber}, sugar={self.sugar}, sodium={self.sodium}, vitamin_a={self.vitamin_a}, vitamin_c={self.vitamin_c}, calcium={self.calcium}, iron={self.iron}, cholesterol={self.cholesterol}, potassium={self.potassium}, warning={self.warning}, alternative_recommendation={self.alternative_recommendation}, alternative_nutritional_score={self.alternative_nutritional_score})"
+
 
 class FoodRecommendation(BaseModel):
     valid_user_input: bool
@@ -33,6 +36,9 @@ class FoodRecommendation(BaseModel):
     general_nutritional_score: Optional[int] = Field(ge=0, le=100)
     nutritional_info_unit: Optional[str]
     food_recommendations: Optional[list[FoodRecommendationItem]]
+
+    def __str__(self):
+        return f"FoodRecommendation(valid_user_input={self.valid_user_input}, error_message={self.error_message}, short_food_name={self.short_food_name}, general_description={self.general_description}, general_recommendation={self.general_recommendation}, general_nutritional_score={self.general_nutritional_score}, nutritional_info_unit={self.nutritional_info_unit}, food_recommendations={self.food_recommendations})"
 
 
     

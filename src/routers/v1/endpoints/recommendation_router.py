@@ -5,6 +5,7 @@ from src.service.firestore_service import FirestoreService
 from src.service.firebase_storage_service import FirebaseStorageService
 from src.middleware.auth_middleware import authentication_jwt_middleware
 from firebase_admin.auth import UserRecord
+from src.config.logger import logger
 
 
 
@@ -19,6 +20,7 @@ async def health_check():
     """
     Health check endpoint
     """
+    logger.info({"route": "/health_check", "message": "Health check endpoint is healthy!"})
     return {"message": "Recommendation endpoint is healthy!"}
 
 
@@ -27,6 +29,7 @@ async def recommendations(user_info: Annotated[UserRecord, Depends(authenticatio
     """
     Get user recommendations
     """
+    logger.info({"route": "/get-recommendations", "message": f"Getting recommendations for user {user_info.uid}"})
     return get_recommendations(user_info, firestore_service)
 
 
@@ -35,6 +38,7 @@ async def recommendation_by_id(user_info: Annotated[UserRecord, Depends(authenti
     """
     Get recommendation by id
     """
+    logger.info({"route": "/get-recommendation/{recommendation_id}", "message": f"Getting recommendation for user {user_info.uid} with recommendation id {recommendation_id}"})
     return get_recommendation_by_id(user_info, recommendation_id, firestore_service)
 
 
@@ -43,4 +47,5 @@ async def delete_recommendation(user_info: Annotated[UserRecord, Depends(authent
     """
     Delete recommendation by id
     """
+    logger.info({"route": "/delete-recommendation/{recommendation_id}", "message": f"Deleting recommendation for user {user_info.uid} with recommendation id {recommendation_id}"})
     return delete_recommendation_by_id(user_info, recommendation_id, firestore_service)

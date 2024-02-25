@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.routers.v1 import router_v1
 from src.config.config import get_settings
 from src.config.firebase_admin import initialize_firebase_admin
+from src.config.logger import logger
 
 
 SETTINGS = get_settings()
@@ -25,6 +26,7 @@ app = FastAPI(
     generate_unique_id_function=custom_generate_unique_id,
     lifespan=lifespan
 )
+logger.info(f"Initializing {SETTINGS.API_NAME} API")
 
 origins = [
     "*"

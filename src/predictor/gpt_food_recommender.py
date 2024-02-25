@@ -8,6 +8,7 @@ from src.schema.food_detection import FoodDetection
 from src.template.food_recomendation_template import FOOD_RECOMMENDATION_TEMPLATE
 from src.schema.food_recommendation import FoodRecommendation
 from langchain.schema.messages import HumanMessage, SystemMessage
+from src.config.logger import logger
 
 
 SETTINGS = get_settings()
@@ -28,6 +29,7 @@ class GPTFoodRecommender(GeneralFoodRecommender):
         """
         Detect food in an image using the GPT Vision model
         """
+        logger.info({"method": "get_recommendation", "message": f"Getting recommendation for food_detection: {food_detection} and recommender_context_template: {recommender_context_template[:100]}..."})
         out_parser = PydanticOutputParser(pydantic_object=FoodRecommendation)
         
         prompt = PromptTemplate(
@@ -59,5 +61,6 @@ class GPTFoodRecommender(GeneralFoodRecommender):
 
         food_recommendation: FoodRecommendation = out_parser.invoke(prediction)
 
+        logger.info({"method": "get_recommendation", "message": f"Got recommendation: {str(food_recommendation)[:100]}..."})
         return food_recommendation
         

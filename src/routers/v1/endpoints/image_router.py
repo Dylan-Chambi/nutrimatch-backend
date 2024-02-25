@@ -10,6 +10,7 @@ from src.middleware.auth_middleware import authentication_jwt_middleware
 from firebase_admin.auth import UserRecord
 from src.predictor.gpt_food_detector import GPTFoodDetector
 from src.predictor.gpt_food_recommender import GPTFoodRecommender
+from src.config.logger import logger
 
 
 
@@ -36,6 +37,7 @@ async def health_check():
     """
     Health check endpoint
     """
+    logger.info({"route": "/health_check", "message": "Health check endpoint is healthy!"})
     return {"message": "Food detection endpoint is healthy!"}
 
 
@@ -44,7 +46,7 @@ def detect_food(file: UploadFile = Depends(ImageValidationMiddleware()), img_pre
     """
     Detect food in an image
     """
-    
+    logger.info({"route": "/image", "message": f"Detecting food in image for file {file.filename}"})
     return image_detect_food(file, img_pred_service)
 
 
@@ -59,5 +61,5 @@ def recommend_food(
     """
     Recommend food in an image
     """
-    
+    logger.info({"route": "/recommendation", "message": f"Recommending food in image for user {user_info.uid} and file {file.filename}"})
     return get_recomendation_by_image(user_info, file, img_pred_service, recommender_service, firestore_service)
