@@ -1,14 +1,15 @@
 from fastapi import HTTPException, UploadFile
 from firebase_admin import firestore
 from firebase_admin.auth import UserRecord
-from src.service.firebase_storage_service import FirebaseStorageService
+from src.service.firebase.firebase_storage_service import FirebaseStorageService
+from src.model.general_database import GeneralDatabase
 from src.schema.food_recommendation import FoodRecommendation
 from src.schema.food_recommendation_document import FoodRecommendationDocument
 from src.util.image_util import convet_file_webp
 import concurrent
 from src.config.logger import logger
 
-class FirestoreService:
+class FirestoreService(GeneralDatabase):
     def __init__(self, firebase_storage_service: FirebaseStorageService):
         self.db = firestore.client()
         self.firebase_storage_service = firebase_storage_service

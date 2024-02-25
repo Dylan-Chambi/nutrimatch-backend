@@ -3,8 +3,8 @@ from typing import Annotated
 from src.controller.image_controller import image_detect_food, get_recomendation_by_image
 from src.middleware.image_middleware import ImageValidationMiddleware
 from src.service.image_pred_service import ImagePredictionService
-from src.service.firestore_service import FirestoreService
-from src.service.firebase_storage_service import FirebaseStorageService
+from src.service.firebase.firestore_service import FirestoreService
+from src.service.firebase.firebase_storage_service import FirebaseStorageService
 from src.service.recomendation_service import RecommendationService
 from src.middleware.auth_middleware import authentication_jwt_middleware
 from firebase_admin.auth import UserRecord
