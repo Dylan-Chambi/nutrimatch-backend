@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     FIREBASE_CLIENT_X509_CERT_URL: str
     FIREBASE_UNIVERSE_DOMAIN: str
     FIREBASE_STORAGE_BUCKET: str
+    MONGODB_URI: str
 
 
 @cache

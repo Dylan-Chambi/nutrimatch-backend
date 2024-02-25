@@ -3,6 +3,8 @@ from typing import Annotated
 from src.controller.image_controller import image_detect_food, get_recomendation_by_image
 from src.middleware.image_middleware import ImageValidationMiddleware
 from src.service.image_pred_service import ImagePredictionService
+from src.model.general_database import GeneralDatabase
+from src.service.mongodb.mongodb_service import MongoDBService
 from src.service.firebase.firestore_service import FirestoreService
 from src.service.firebase.firebase_storage_service import FirebaseStorageService
 from src.service.recomendation_service import RecommendationService
@@ -27,9 +29,9 @@ def get_recommendation_service():
     gpt_food_recommender = GPTFoodRecommender()
     return RecommendationService(gpt_food_recommender)
 
-def get_firestore_service():
+def get_database_service():
     firebase_storage_service = FirebaseStorageService()
-    return FirestoreService(firebase_storage_service)
+    return MongoDBService(firebase_storage_service)
 
 
 @food_detec_router.get("/health-check", status_code=status.HTTP_200_OK)
@@ -56,10 +58,10 @@ def recommend_food(
         file: UploadFile = Depends(ImageValidationMiddleware()), 
         img_pred_service: ImagePredictionService = Depends(get_image_pred_service), 
         recommender_service: RecommendationService = Depends(get_recommendation_service),
-        firestore_service: FirestoreService = Depends(get_firestore_service)
+        database_service: GeneralDatabase = Depends(get_database_service)
     ):
     """
     Recommend food in an image
     """
     logger.info({"route": "/recommendation", "message": f"Recommending food in image for user {user_info.uid} and file {file.filename}"})
-    return get_recomendation_by_image(user_info, file, img_pred_service, recommender_service, firestore_service)
+    return get_recomendation_by_image(user_info, file, img_pred_service, recommender_service, database_service)

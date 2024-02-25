@@ -56,7 +56,7 @@ class FirestoreService(GeneralDatabase):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_to_doc = {executor.submit(self.get_image_url, doc): doc for doc in docs}
             for future in concurrent.futures.as_completed(future_to_doc):
-                doc: firestore.DocumentSnapshot = future_to_doc[future]
+                doc = future_to_doc[future]
                 try:
                     image_url = future.result()
                     doc_dict = doc.to_dict()

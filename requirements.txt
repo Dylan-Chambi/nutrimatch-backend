@@ -6,3 +6,4 @@ numpy
 python_multipart
 pillow
 firebase-admin
+pymongo

@@ -3,6 +3,7 @@ from typing import Annotated
 from src.controller.recommendation_controller import get_recommendations, get_recommendation_by_id, delete_recommendation_by_id
 from src.model.general_database import GeneralDatabase
 from src.service.firebase.firestore_service import FirestoreService
+from src.service.mongodb.mongodb_service import MongoDBService
 from src.service.firebase.firebase_storage_service import FirebaseStorageService
 from src.middleware.auth_middleware import authentication_jwt_middleware
 from firebase_admin.auth import UserRecord
@@ -12,9 +13,9 @@ from src.config.logger import logger
 
 recommendation_router = APIRouter()
 
-def get_firestore_service():
+def get_database_service():
     firebase_storage_service = FirebaseStorageService()
-    return FirestoreService(firebase_storage_service)
+    return MongoDBService(firebase_storage_service)
 
 @recommendation_router.get("/health-check", status_code=status.HTTP_200_OK)
 async def health_check():
@@ -26,7 +27,7 @@ async def health_check():
 
 
 @recommendation_router.get("/get-recommendations")
-async def recommendations(user_info: Annotated[UserRecord, Depends(authentication_jwt_middleware)], firestore_service: GeneralDatabase = Depends(get_firestore_service)):
+async def recommendations(user_info: Annotated[UserRecord, Depends(authentication_jwt_middleware)], firestore_service: GeneralDatabase = Depends(get_database_service)):
     """
     Get user recommendations
     """
@@ -35,7 +36,7 @@ async def recommendations(user_info: Annotated[UserRecord, Depends(authenticatio
 
 
 @recommendation_router.get("/get-recommendation/{recommendation_id}")
-async def recommendation_by_id(user_info: Annotated[UserRecord, Depends(authentication_jwt_middleware)], recommendation_id: str, firestore_service: GeneralDatabase = Depends(get_firestore_service)):
+async def recommendation_by_id(user_info: Annotated[UserRecord, Depends(authentication_jwt_middleware)], recommendation_id: str, firestore_service: GeneralDatabase = Depends(get_database_service)):
     """
     Get recommendation by id
     """
@@ -44,7 +45,7 @@ async def recommendation_by_id(user_info: Annotated[UserRecord, Depends(authenti
 
 
 @recommendation_router.delete("/delete-recommendation/{recommendation_id}")
-async def delete_recommendation(user_info: Annotated[UserRecord, Depends(authentication_jwt_middleware)], recommendation_id: str, firestore_service: GeneralDatabase = Depends(get_firestore_service)):
+async def delete_recommendation(user_info: Annotated[UserRecord, Depends(authentication_jwt_middleware)], recommendation_id: str, firestore_service: GeneralDatabase = Depends(get_database_service)):
     """
     Delete recommendation by id
     """

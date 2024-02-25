@@ -26,7 +26,7 @@ app = FastAPI(
     generate_unique_id_function=custom_generate_unique_id,
     lifespan=lifespan
 )
-logger.info(f"Initializing {SETTINGS.API_NAME} API")
+logger.info(f"Initializing {SETTINGS.API_NAME}")
 
 origins = [
     "*"

@@ -22,12 +22,6 @@ class GeneralDatabase(ABC):
     def delete_recommendation_by_id(self, user_info: UserRecord, recommendation_id: str):
         pass
 
+    @abstractmethod
     def get_image_url(self, doc) -> str:
-        """
-        Get image URL for a document
-        """
-        doc_dict = doc.to_dict()
-        image_path = doc_dict.get('image_path')
-        if image_path:
-            return self.firebase_storage_service.get_image_url(image_path)
-        return None
+        pass
