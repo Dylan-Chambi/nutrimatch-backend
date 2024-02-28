@@ -23,12 +23,12 @@ def get_keys(user_info: UserRecord, key_service: KeysService) -> list[Token]:
         raise HTTPException(status_code=500, detail="Internal server error") from e
     
 
-def add_new_key(user_info: UserRecord, token: str, email: str, key_service: KeysService) -> Token:
+def add_new_key(user_info: UserRecord, token: str, email: str, tier: int, key_service: KeysService) -> Token:
     """
     Add key
     """
     try:
-        key = Token(email=email, token=token)
+        key = Token(email=email, token=token, tier=tier)
         return key_service.add_key(key)
     except HTTPException as e:
         traceback.print_exc()
@@ -54,12 +54,12 @@ def deactivate_key(user_info: UserRecord, token: str, key_service: KeysService) 
         raise HTTPException(status_code=500, detail="Internal server error") from e
     
 
-def get_last_valid_key(user_info: UserRecord, key_service: KeysService) -> Token:
+def get_last_valid_key(user_info: UserRecord, tier: int, key_service: KeysService) -> Token:
     """
     Get last active key
     """
     try:
-        return key_service.get_last_key_active()
+        return key_service.get_last_key_active(tier)
     except HTTPException as e:
         traceback.print_exc()
         raise e

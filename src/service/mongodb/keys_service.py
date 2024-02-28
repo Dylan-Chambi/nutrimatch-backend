@@ -11,7 +11,6 @@ SETTINGS = get_settings()
 class KeysService:
     def __init__(self):
         self.client = MongoClient(SETTINGS.MONGODB_URI)
-        self.client['keys']['tokens_data'].create_index([("id", 1)], unique=True)
 
 
     def get_all_keys(self) -> list[Token]:
@@ -67,17 +66,19 @@ class KeysService:
         return self.update_key_by_token(token, isTokenActive=False)
     
 
-    def get_last_key_active(self) -> Token:
+    def get_last_key_active(self, tier: int) -> Token:
         """
         Get last active key
         """
         logger.info({"method": "get_last_key_active", "message": "Getting last active key"})
         db = self.client['keys']
         col = db['tokens_data']
-        keys = col.find({"isTokenActive": True}).sort("dateCreated", -1)
-        if keys and len(list(keys)) > 0:
-            return Token(**keys[0])
+        keys = col.find({"isTokenActive": True, "tier": tier}).sort("dateCreated", -1).limit(1)
+        keys_arr = list(keys)
+        if keys and len(keys_arr) > 0:
+            return Token(**keys_arr[0])
         else:
+            logger.error({"method": "get_last_key_active", "message": f"No active keys found: {keys_arr}"})
             raise HTTPException(status_code=404, detail="No active keys found")
 
     
