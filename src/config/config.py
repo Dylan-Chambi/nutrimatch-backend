@@ -8,9 +8,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     API_NAME: str = "NutriMatch API"
     REVISION: str = "local"
-    OPENAI_CHAT_MODEL: str = "gpt-4-turbo-preview"
+    OPENAI_CHAT_MODEL: str = "gpt-3.5-turbo-0125"
     OPENAI_VISION_MODEL: str = "gpt-4-vision-preview"
-    OPENAI_KEY: str
     FIREBASE_TYPE: str
     FIREBASE_PROJECT_ID: str
     FIREBASE_PRIVATE_KEY_ID: str

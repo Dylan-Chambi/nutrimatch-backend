@@ -13,6 +13,7 @@ from firebase_admin.auth import UserRecord
 from src.predictor.gpt_food_detector import GPTFoodDetector
 from src.predictor.gpt_food_recommender import GPTFoodRecommender
 from src.config.logger import logger
+from src.service.mongodb.keys_service import KeysService
 
 
 
@@ -21,12 +22,14 @@ food_detec_router = APIRouter()
 
 
 def get_image_pred_service():
-    gpt_food_detector = GPTFoodDetector()
+    keys_service = KeysService()
+    gpt_food_detector = GPTFoodDetector(keys_service)
     return ImagePredictionService(gpt_food_detector)
 
 
 def get_recommendation_service():
-    gpt_food_recommender = GPTFoodRecommender()
+    keys_service = KeysService()
+    gpt_food_recommender = GPTFoodRecommender(keys_service)
     return RecommendationService(gpt_food_recommender)
 
 def get_database_service():

@@ -9,6 +9,13 @@ Food Recommendation:
 - Food Recommendations: a list of recommendations for each food or dish present on the user input
 
 Food Recommendation Item:
+- Name: the name of the food or dish
+- Size: the size of the food or dish
+- Size Unit: the unit of measurement for the size of the food or dish
+- Amount: the amount of the food or dish
+- Confidence: the confidence of the detection
+- Seasonings: a list of seasonings for the food or dish
+- Ingredients: a list of ingredients for the food or dish
 - Recommendation: a recommendation for the food or dish
 - Nutritional Score: a score from 0 to 100 indicating the nutritional value of the recommendation
 - Calories: the amount of calories

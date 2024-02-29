@@ -1,5 +1,6 @@
-import numpy as np
+from fastapi import HTTPException
 from src.config.config import get_settings
+from langchain_community.callbacks import get_openai_callback
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.output_parsers import PydanticOutputParser
@@ -8,16 +9,21 @@ from src.schema.food_detection import FoodDetection
 from src.template.food_detection_template import FOOD_DETECTION_TEMPLATE
 from langchain.schema.messages import HumanMessage, SystemMessage
 from src.config.logger import logger
+from src.service.mongodb.keys_service import KeysService
+from openai import OpenAIError
 
 SETTINGS = get_settings()
 
 class GPTFoodDetector(GeneralFoodDetector):
-    def __init__(self):
+    def __init__(self, keys_service: KeysService):
+        self.keys_service = keys_service
+        self.tier = 1
+        self.valid_token = self.keys_service.get_last_key_active(tier=self.tier)
         super().__init__(
             model_name=SETTINGS.OPENAI_VISION_MODEL, 
             model=ChatOpenAI(model_name=SETTINGS.OPENAI_VISION_MODEL,
-                             openai_api_key=SETTINGS.OPENAI_KEY,
-                             max_tokens=1000,
+                             openai_api_key=self.valid_token.token,
+                             max_tokens=300,
                              )
             )
         
@@ -57,10 +63,36 @@ class GPTFoodDetector(GeneralFoodDetector):
                 )
             ]
         
-        prediction = self.model.invoke(messages)     
-        
+        prediction = self.try_make_prediction(messages)
+
         food_detection: FoodDetection = out_parser.invoke(prediction)
         
         logger.info({"method": "detect_food", "message": f"Detected food in image: {str(food_detection)[:100]}..."})
         return food_detection
         
+    def try_make_prediction(self, messages: list, max_tries: int = 5) -> dict:
+        """
+        Try to make a prediction with the given messages and output parser
+        """
+        for _ in range(max_tries):
+            try:
+                with get_openai_callback() as cb:
+                    prediction = self.model.invoke(messages)
+                    self.keys_service.add_tokens_usage_by_token(self.valid_token.token, cb.prompt_tokens, cb.completion_tokens, cb.total_tokens, self.model.model_name)
+                return prediction
+            except OpenAIError as e:
+                if e.body.get("code") == "insufficient_quota":
+                    self.keys_service.deactivate_key_by_token(self.valid_token.token)
+                    self.valid_token = self.keys_service.get_last_key_active(self.tier)
+                    print(f"Got new token: {self.valid_token.token}")
+                    self.model = ChatOpenAI(model_name=self.model.model_name,
+                             openai_api_key=self.valid_token.token,
+                             max_tokens=self.model.max_tokens,
+                             )
+                else:
+                    logger.error({"method": "try_make_prediction", "message": f"Error making prediction with messages: {str(messages)[:100]}: {e}"})
+                    raise e
+            except Exception as e:
+                logger.error({"method": "try_make_prediction", "message": f"Error making prediction with messages: {str(messages)[:100]}: {e}"})
+                raise e
+        raise HTTPException(status_code=500, detail="Could not make prediction after {max_tries} tries")

@@ -80,5 +80,51 @@ class KeysService:
         else:
             logger.error({"method": "get_last_key_active", "message": f"No active keys found: {keys_arr}"})
             raise HTTPException(status_code=404, detail="No active keys found")
+        
+
+    def add_tokens_usage_by_token(self, token: str, tokensInputUsage: int, tokensOutputUsage: int, totalTokensUsage: int, model_name: str) -> Token:
+        """
+        Add tokens usage by token
+        """
+        logger.info({"method": "add_tokens_usage_by_token", "message": f"Adding tokens usage by token {token}, tokensInputUsage: {tokensInputUsage}, tokensOutputUsage: {tokensOutputUsage}, totalTokensUsage: {totalTokensUsage}, model_name: {model_name}"})
+        db = self.client['keys']
+        col = db['tokens_data']
+        input_price, output_price = self.token_to_usd(tokensInputUsage, tokensOutputUsage, model_name)
+        data =  col.find_one({"token": token})
+        if data:
+            data["tokensInputUsage"] += tokensInputUsage
+            data["tokensOutputUsage"] += tokensOutputUsage
+            data["totalTokensUsage"] += totalTokensUsage
+            data["inputPricing"] += input_price
+            data["outputPricing"] += output_price
+            data["totalPricing"] += input_price + output_price
+            data["totalUsages"] += 1
+            data["dateUpdated"] = datetime.now()
+            col.update_one({"token": token}, {"$set": data})
+            updated_data =  col.find_one({"token": token})
+            logger.info({"method": "add_tokens_usage_by_token", "message": f"Added tokens usage by token {token}, tokensInputUsage: {tokensInputUsage}, tokensOutputUsage: {tokensOutputUsage}, totalTokensUsage: {totalTokensUsage}, InputPricing: {input_price}, OutputPricing: {output_price}, TotalPricing: {input_price + output_price}"})
+            return Token(**updated_data)
+        else:
+            logger.error({"method": "add_tokens_usage_by_token", "message": f"No key found for token {token}"})
+            raise HTTPException(status_code=404, detail=f"No key found for token {token}")
+    
+    def token_to_usd(self, input_tokens: int, output_tokens: int, model_name: str) -> tuple[float, float]:
+        """
+        Calculate the price of the tokens
+        """
+        match = {
+            "gpt-4-0125-preview": {"input": 0.01, "output": 0.03},
+            "gpt-4-1106-preview": {"input": 0.01, "output": 0.03},
+            "gpt-4-1106-vision-preview": {"input": 0.01, "output": 0.03},
+            "gpt-4-vision-preview": {"input": 0.01, "output": 0.03},
+            "gpt-3.5-turbo-0125": {"input": 0.0005, "output": 0.0015},
+            "gpt-3.5-turbo": {"input": 0.0005, "output": 0.0015},
+        }
+        input_price = input_tokens * match[model_name]["input"] / 1000
+        output_price = output_tokens * match[model_name]["output"] / 1000
+
+
+        logger.info({"method": "token_to_usd", "message": f"Converting input_tokens: {input_tokens}, output_tokens: {output_tokens}, model_name: {model_name} to input_price: {input_price}, output_price: {output_price}"})
+        return input_price, output_price
 
     
