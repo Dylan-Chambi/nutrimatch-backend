@@ -18,7 +18,7 @@ class MongoDBService(GeneralDatabase):
     def __init__(self, firebase_storage_service: FirebaseStorageService):
         self.client = MongoClient(SETTINGS.MONGODB_URI)
         self.firebase_storage_service = firebase_storage_service
-        self.client['nutrimatch']['recommendations'].create_index([("id", 1)], unique=True)
+        # self.client['nutrimatch']['recommendations'].create_index([("_id", 1)])
 
     def save_recommendation_by_user(self, recommendation: FoodRecommendation, user_info: UserRecord, image: UploadFile) -> FoodRecommendationDocument:
         logger.info({"method": "save_recommendation_by_user", "message": f"Saving recommendation by user {user_info.uid} with recommendation {str(recommendation)[:100]}... and image {image.filename}"})
