@@ -26,6 +26,9 @@ app = FastAPI(
     generate_unique_id_function=custom_generate_unique_id,
     lifespan=lifespan
 )
+
+app.openapi_version = "3.0.3"
+
 logger.info(f"Initializing {SETTINGS.API_NAME}")
 
 origins = [

@@ -116,3 +116,9 @@ venv.bak/
 # Miscellaneous
 clean_env.ps1
 test.py
+
+# OpenAPI
+openapi
+openapi.json
+openapi_url.txt
+openapi.zip
